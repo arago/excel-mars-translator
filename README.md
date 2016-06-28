@@ -1,8 +1,10 @@
 == Overview ==
 
-- TODO link to tabtab post
+- For details please see https://tabtab.co/post/b43804a0-a3e3-4c8d-b219-6a466fbdd85b
 
 == Usage ==
+
+    java -jar XlxsMarsTranslator.jar /full/path/to/folderToStoreXmlFiles/ /full/path/to/source.xlsx
 
 == Packaging ==
 
