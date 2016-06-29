@@ -21,7 +21,7 @@ Contributions are welcome via pull request.
 Support
 -----
 
-Please ask your question in the https://tabtab.co community.
+Please ask your question in the https://tabtab.co/sub/xlxstomarstranslator community.
 
 License
 -----
