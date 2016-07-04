@@ -2,6 +2,7 @@ Overview
 ========
 
 - For details please see https://tabtab.co/post/b43804a0-a3e3-4c8d-b219-6a466fbdd85b
+- You can download a precompiled version from the releases tab https://github.com/arago/excel-mars-translator/releases which will hold the XlxsMarsTranslator.jar in the dist/ directory.
 
 Usage
 -----
