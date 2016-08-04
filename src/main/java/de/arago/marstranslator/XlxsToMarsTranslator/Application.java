@@ -108,14 +108,7 @@ public  class Application extends Node{
 		
 		xml+=">\n";
 		
-		for(Cell header : headerList){
-			for(Cell value : valueList){
-				if(value.getCellNumber()== header.getCellNumber()&& value.getContent()!=null && ! value.getContent().isEmpty()){
-					xml+="<"+header.getContent()+"> <Content Value=\""+value.getContent()+"\"/> </"+ header.getContent()+">\n"; 
-					checkCellForSpecialHeaders(header.getContent(), value.getContent());
-				}
-			}
-		}
+		xml+=setOptValues(headerList, valueList);
 		
 		if(dependencies!=null&& !dependencies.isEmpty()){
 			xml+="<Dependencies>\n";
@@ -130,6 +123,8 @@ public  class Application extends Node{
 		}
 		return xml; 
 	}
+
+	
 
 	public String getApplicationClass() {
 		return applicationClass;
