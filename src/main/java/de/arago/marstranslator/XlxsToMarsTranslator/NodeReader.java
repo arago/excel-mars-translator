@@ -23,6 +23,10 @@ public class NodeReader {
 	private List<Cell> softwareHeaderList= new ArrayList<Cell>();  
 	private List<Cell> resourceHeaderList= new ArrayList<Cell>(); 
 	private List<Cell> applicationHeaderList= new ArrayList<Cell>(); 
+	private List<Cell> machineHeaderKeyList = new ArrayList<Cell>(); 
+	private List<Cell> softwareHeaderKeyList= new ArrayList<Cell>();  
+	private List<Cell> resourceHeaderKeyList= new ArrayList<Cell>(); 
+	private List<Cell> applicationHeaderKeyList= new ArrayList<Cell>(); 
 	
 	public List<Node> readListOfNodes(final XSSFWorkbook excel, String type){
 		List<Node> nodeList = new ArrayList<Node>(); 
@@ -34,16 +38,11 @@ public class NodeReader {
 		}
 		final int lines = sheet.getLastRowNum();
 		log.info("found "+lines+" lines in '"+type+"' ");
-		
-		
 			
 			final XSSFRow firstRow = sheet.getRow(0);
 			
 			readHeaderFromRow(type, firstRow); 
-			
 
-
-		
 		for(int line = 2 ;line<=lines;line++) // skip the first line two lines 
 		{
 			
@@ -57,14 +56,7 @@ public class NodeReader {
 		
 	}
 	
-	private void readResourceHeadFromRow(XSSFRow firstRow) {
-		for(int i = 6; i < firstRow.getLastCellNum();  i++) {
-			if(firstRow.getCell(i)!=null){
-				if(!trim(firstRow,i ).isEmpty()){
-				resourceHeaderList.add(new Cell(i,trim(firstRow,i ))); }
-				}
-			}
-	}	
+
 
 	private Node readNodeFromRow(String type, XSSFRow row){
 		if(trim(row,0)!=null&& (!trim(row,0).isEmpty())){
@@ -127,14 +119,30 @@ public class NodeReader {
 			if(row.getCell(8)!=null)
 				machine.setOSMinorVersion(trim(row,8));
 			
-			for(Cell headercell : machineHeaderList) {
-				String currenFreeValue = trim(row,headercell.getCellNumber()); 
-				if(currenFreeValue!= null && currenFreeValue!= ""){
-				machine.getValueList().add(new Cell(headercell.getCellNumber(),currenFreeValue )); }
-			
-			}
+		
+			readOptCell(row, machine, machineHeaderList);
 		}	
 		return machine; 
+	}
+
+
+
+	private void readOptCell(XSSFRow row, Node node, List<Cell> headerList) {
+		for(Cell headercell : headerList) {
+			String currenFreeValue = trim(row,headercell.getCellNumber()); 
+			String keyValue = null;
+			if(headercell.getKeyRowNumber()>0){
+				keyValue = trim(row, headercell.getKeyRowNumber()); 
+			}
+			if(currenFreeValue!= null && currenFreeValue!= ""  ){
+				if(keyValue!= null && keyValue!=""){
+					node.getValueList().add(new Cell(headercell.getCellNumber(),currenFreeValue, headercell.getKeyRowNumber(), keyValue ));
+					}
+				else{
+					node.getValueList().add(new Cell(headercell.getCellNumber(),currenFreeValue )); }
+				}	
+			}
+			
 	}
 	
 
@@ -166,11 +174,9 @@ public class NodeReader {
 				if(softwareHeaderList!=null ){
 					software.setHeaderList(softwareHeaderList);
 				}
-				for(Cell headercell : softwareHeaderList) {
-					String currenFreeValue = trim(row,headercell.getCellNumber()); 
-					if(currenFreeValue!= null && currenFreeValue!= ""){
-						software.getValueList().add(new Cell(headercell.getCellNumber(),currenFreeValue )); }
-					}
+				
+				readOptCell(row, software, softwareHeaderList);
+				
 			}
 		
 			return software; 
@@ -197,34 +203,76 @@ public class NodeReader {
 	
 	}
 
-	private void readMachineHeaderFromRow(XSSFRow firstRow) {
+	private boolean isKey(String header){
+		if (header.endsWith("_key"))
+			return true; 
+		return false; 
+	}
+	
+	private void readAndMatchHeader(XSSFRow firstRow, int startCell, List<Cell> headerList, List<Cell> keyList){
+		readHeader(firstRow, startCell, headerList, keyList);
+		log.debug("hz: "+headerList.size());
+		matchHeder(headerList, keyList); 
+		log.debug("hz: "+headerList.size());
 		
-		for(int i = 9; i < firstRow.getLastCellNum();  i++) {
-			if(firstRow.getCell(i)!=null ){
-				if(!trim(firstRow,i ).isEmpty()){
-					machineHeaderList.add(new Cell(i,trim(firstRow,i ))); 
+	}
+
+
+
+	private void matchHeder(List<Cell> headerList, List<Cell> keyList) {
+		if(keyList!=null){
+			for(int i = 0; i <keyList.size(); i ++ ){
+				Cell keyCell = keyList.get(i); 
+				for(int j = 0; j< headerList.size(); j ++ ){
+					Cell heaerCell = headerList.get(j); 
+					if((heaerCell.getContent()+"_key").equals(keyCell.getContent())){
+						heaerCell.setKeyRowNumber(keyCell.getCellNumber());
+//						log.debug("found header and key: " + heaerCell.getContent() + " == " + keyCell.getContent() + " for keynr. "+ heaerCell.getKeyRowNumber() );
+					}
 				}
+			}
+		}
+		
+	}
+
+
+
+	private void readHeader(XSSFRow firstRow, int startCell,
+			List<Cell> headerList, List<Cell> keyList) {
+		for(int i = startCell; i < firstRow.getLastCellNum();  i++) {
+			if(firstRow.getCell(i)!=null){
+				String header = trim(firstRow,i ); 
+				if(header!= null && !header.isEmpty()){
+					if(isKey(header)){
+						log.debug("key found " + header);
+						keyList.add(new Cell(i, header)); 
+					}
+					else{
+						headerList.add(new Cell(i,header)); 
+						log.debug("header found  " + header);
+						}
+					}
 				}
 			}
 	}
+	
+	private void readResourceHeadFromRow(XSSFRow firstRow) {
+		readAndMatchHeader(firstRow, 6, resourceHeaderList, resourceHeaderKeyList) ; 
+	}	
+	
+	
+	private void readMachineHeaderFromRow(XSSFRow firstRow) {
+		readAndMatchHeader(firstRow, 9, machineHeaderList, machineHeaderKeyList) ; 
+		
+	}
 			
 	private void readSoftwareHeaderFromRow(XSSFRow firstRow) {
-		for(int i = 7; i < firstRow.getLastCellNum();  i++) {
-			if(firstRow.getCell(i)!=null){
-				if(!trim(firstRow,i ).isEmpty()){
-				softwareHeaderList.add(new Cell(i,trim(firstRow,i ))); 
-				}
-				}
-			}
+		readAndMatchHeader(firstRow, 7, softwareHeaderList, softwareHeaderKeyList) ; 
+		
 	}	
 			
 	private void readApplicationHeadFromRow(XSSFRow firstRow) {
-		for(int i = 7; i < firstRow.getLastCellNum();  i++) {
-			if(firstRow.getCell(i)!=null){
-				if(!trim(firstRow,i ).isEmpty()){
-				applicationHeaderList.add(new Cell(i,trim(firstRow,i ))); }
-				}
-			}
+		readAndMatchHeader(firstRow, 7, applicationHeaderList, applicationHeaderKeyList) ; 
 	}		
 	
 
@@ -272,11 +320,8 @@ public class NodeReader {
 				if(row.getCell(6)!=null&&trim(row,6).isEmpty())
 					application.setAutomationState(trim(row,6));
 
-				for(Cell headercell : applicationHeaderList) {
-					String currenFreeValue = trim(row,headercell.getCellNumber()); 
-					if(currenFreeValue!= null && currenFreeValue!= ""){
-						application.getValueList().add(new Cell(headercell.getCellNumber(),currenFreeValue )); }
-					}
+				readOptCell(row, application, applicationHeaderList);
+				
 			
 			}
 			return application; 
@@ -310,11 +355,9 @@ public class NodeReader {
 				resource.setDependencies(dependencies);
 				if(row.getCell(5)!=null&&trim(row,5).isEmpty())
 					resource.setAutomationState(trim(row,5));
-				for(Cell headercell : resourceHeaderList) {
-					String currenFreeValue = trim(row,headercell.getCellNumber()); 
-					if(currenFreeValue!= null && currenFreeValue!= ""){
-						resource.getValueList().add(new Cell(headercell.getCellNumber(),currenFreeValue )); }
-					}
+				
+				readOptCell(row, resource, resourceHeaderList);
+				
 			}
 			return resource; 
 			

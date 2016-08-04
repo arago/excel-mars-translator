@@ -114,6 +114,51 @@ public abstract class Node {
 	}
 	
 	
+	protected String setOptValues( List<Cell> headerList, List<Cell> valueList) {
+		String xmlContent =""; 
+		for(Cell header : headerList){
+			for(Cell value : valueList){
+				
+				if(value.getCellNumber()== header.getCellNumber()&& value.getContent()!=null && ! value.getContent().isEmpty()){
+					checkCellForSpecialHeaders(header.getContent(), value.getContent());
+					
+					//TODO: deal with multiple entries
+					
+					String[] valueArray = value.getContent().split("\r?\n");
+					if(valueArray!=null)
+						xmlContent+= "<"+header.getContent()+"> "; 
+					
+					String[] keyArray = null; 
+					if(value.getKeyContent()!=null)
+						keyArray = value.getKeyContent().split("\r?\n"); 
+					
+					for(int i = 0; i <valueArray.length; i ++ ){
+						String val = valueArray[i]; 
+						
+						
+						if( keyArray== null){
+							xmlContent+="<Content Value=\""+val+"\"/> "; 
+						}
+						else{
+							String keyVal = keyArray[i]; 
+							xmlContent+= " <Content Value=\""+val+"\"  Key=\""+keyVal+"\"/> "; 
+						}
+						
+						
+					}
+					
+
+					if(valueArray!=null)
+						xmlContent+= "</"+ header.getContent()+">\n"; 
+					
+					
+				}
+				
+			}
+		}
+		return xmlContent;
+	}
+	
 	public JSONObject toCURLJSON(){
 		JSONObject j = new JSONObject(); 
 		try {
