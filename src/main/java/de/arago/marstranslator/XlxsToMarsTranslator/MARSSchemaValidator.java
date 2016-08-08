@@ -19,14 +19,18 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 public class MARSSchemaValidator implements XSDValidator {
 	private SchemaFactory schemaFactory; 
 	private File marsSchema; 
 	private Schema schema; 
 	private Validator validator; 
-	
+	protected Logger log = LoggerFactory.getLogger(MARSSchemaValidator.class); 
 	
 	MARSSchemaValidator(int marsVersion) {
 		String MarsSchema = ""; 
@@ -42,7 +46,7 @@ public class MARSSchemaValidator implements XSDValidator {
 		}	
 		 	marsSchema = readSchema(MarsSchema); 
 			schemaFactory= SchemaFactory.newInstance("http://www.w3.org/XML/XMLSchema/v1.1"); 
-			//v.1.1 to allow multiple entries in xsd 
+			
 		try {
 			schema = schemaFactory.newSchema(marsSchema);
 			
@@ -84,11 +88,21 @@ public class MARSSchemaValidator implements XSDValidator {
 			  validator.validate(xmlFile);
 			  return null; 
 			} catch (SAXException e) {
-			  return e.getLocalizedMessage(); 
+				String validationError = e.getLocalizedMessage(); 
+				return suppressFalseValidationErrors(validationError); 
 			} catch (IOException e) {
 				e.printStackTrace();
-				return e.getLocalizedMessage(); 
+				String validationError = e.getLocalizedMessage(); 
+				return suppressFalseValidationErrors(validationError); 
 			}
+	}
+
+
+	private String suppressFalseValidationErrors(String validationError) {
+		if(validationError.contains("cos-element-consistent.4: A wildcard matched a global element ")&& validationError.contains("derivedBy='RESTRICTION'. ' is not validly derived from the type definition,")){
+			return null; 
+		}
+		return validationError; 
 	}
 
 
@@ -110,12 +124,14 @@ public class MARSSchemaValidator implements XSDValidator {
 	public boolean validate(String s) {
 		if(s== null )
 			return false; 
-		Source xmlFile = new StreamSource(new StringReader(s));
+			Source xmlFile = new StreamSource(new StringReader(s));
 		try {
-			  validator.validate(xmlFile);
-			  return true; 
+			  	validator.validate(xmlFile);
+			  	return true; 
 			} catch (SAXException e) {
-			  return false;  
+				if(suppressFalseValidationErrors(e.getLocalizedMessage())==null); 
+					return false;
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 				return false; 

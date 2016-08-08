@@ -202,7 +202,7 @@ public class XlxProcessor {
 			if(node.isValid)
 				saveToFile(node.getXmlRepresentation(), type+i, "xml");
 			else{
-				saveToFile("<!--"+ node.getValidationError() +"-->\n\n"+node.getXmlRepresentation(), "*"+type+i, "xml");
+				saveToFile(node.getXmlRepresentation()+"\n\n<!--"+ node.getValidationError() +"-->", "*"+type+i, "xml");
 			}
 			log.debug("Store "+ type+i +".xml ("   + node.getNodeName()+ ")");
 			i ++; 
