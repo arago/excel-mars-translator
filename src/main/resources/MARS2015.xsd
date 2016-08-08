@@ -3,7 +3,7 @@
            targetNamespace="https://graphit.co/schemas/v2/MARSSchema" 
            xmlns:aae="https://graphit.co/schemas/v2/MARSSchema"
            elementFormDefault="qualified"
-           version="5.3.0" >
+           version="5.3.1" >
 
   <!-- Attribute Definition for reused Attributes in all Node Levels -->
 
@@ -1068,37 +1068,29 @@
     <xs:restriction base="xs:string" />
   </xs:simpleType>
 
-<!--  orgitinal  -->
-
-
-     <xs:complexType name="DependenciesType">
-      <xs:complexContent>
-     <xs:annotation>
-        <xs:documentation>dependencies to next MARS layer
-        </xs:documentation>
-      </xs:annotation> 
- 	<xs:restriction base="xs:anyType"> 
-         <xs:sequence minOccurs="0" maxOccurs="unbounded">
-    	 <xs:element name="Node">
-            <xs:complexType>
-             <xs:attribute name="ID" type="aae:aaeID" use="required" /> 
-            </xs:complexType>
-          </xs:element> 
-        </xs:sequence>
-      </xs:restriction>
-   </xs:complexContent>  
-  </xs:complexType> 
-  
-
-
   <!-- Element and Attribute Definition common for all Node Levels -->
 
+  <xs:complexType name="DependenciesType">
+    <xs:complexContent>
+      <xs:annotation>
+        <xs:documentation>dependencies to next MARS layer
+        </xs:documentation>
+      </xs:annotation>
+      <xs:restriction base="xs:anyType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Node">
+            <xs:complexType>
+              <xs:attribute name="ID" type="aae:aaeID" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  
   <xs:complexType name="CommonNodeType">
     <xs:sequence>
-    <!--  took out dependencies for now, causing validation problems -->
-     <!--  <xs:element name="Dependencies" type="aae:DependenciesType" minOccurs="0" ></xs:element>   -->
-      <xs:element name="Dependencies" minOccurs="0" type="xs:anyType">       
-      </xs:element>
+      <xs:element name="Dependencies" type="aae:DependenciesType" minOccurs="0" />
       <xs:element name="MAIDChecks" type="aae:GenericMap" minOccurs="0" >
       </xs:element>
     </xs:sequence>
@@ -1627,13 +1619,12 @@
             </xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <!-- we have NetworkPort twice... probably stupid to begin with
-             <xs:attribute name="NetworkPort" type="aae:Port" use="required">
-             <xs:annotation>
-             <xs:documentation>the ip port</xs:documentation>
-             </xs:annotation>
-             </xs:attribute>
-        -->
+        <xs:attribute name="DockerContainerName" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>name of docker container
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

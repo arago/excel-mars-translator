@@ -22,7 +22,7 @@ public abstract class Node {
 	protected List<Cell> headerList; 
 	protected List<Cell> valueList; 
 	protected boolean isValid = true; 
-	protected String validatonError = ""; 
+	protected String validatonError = null; 
 	
 	protected Logger log = LoggerFactory.getLogger(Node.class); 
 	
@@ -30,6 +30,9 @@ public abstract class Node {
 		return validatonError; 
 	}
 	
+	public void setValidationError(String validationError){
+		this.validatonError = validationError; 
+	}
 	
 	public Node(String nodeType){
 		this.nodeType = nodeType; 
@@ -122,7 +125,6 @@ public abstract class Node {
 				if(value.getCellNumber()== header.getCellNumber()&& value.getContent()!=null && ! value.getContent().isEmpty()){
 					checkCellForSpecialHeaders(header.getContent(), value.getContent());
 					
-					//TODO: deal with multiple entries
 					
 					String[] valueArray = value.getContent().split("\r?\n");
 					if(valueArray!=null)

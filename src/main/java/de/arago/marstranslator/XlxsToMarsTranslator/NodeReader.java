@@ -89,7 +89,6 @@ public class NodeReader {
 	
 			if(machineHeaderList!=null ){
 				machine.setHeaderList(machineHeaderList);
-				log.debug("setheaderlist");
 			}
 			machine.setId(trim(row,0));
 			machine.setNodeName(trim(row,1));
@@ -211,9 +210,7 @@ public class NodeReader {
 	
 	private void readAndMatchHeader(XSSFRow firstRow, int startCell, List<Cell> headerList, List<Cell> keyList){
 		readHeader(firstRow, startCell, headerList, keyList);
-		log.debug("hz: "+headerList.size());
 		matchHeder(headerList, keyList); 
-		log.debug("hz: "+headerList.size());
 		
 	}
 
@@ -227,7 +224,6 @@ public class NodeReader {
 					Cell heaerCell = headerList.get(j); 
 					if((heaerCell.getContent()+"_key").equals(keyCell.getContent())){
 						heaerCell.setKeyRowNumber(keyCell.getCellNumber());
-//						log.debug("found header and key: " + heaerCell.getContent() + " == " + keyCell.getContent() + " for keynr. "+ heaerCell.getKeyRowNumber() );
 					}
 				}
 			}
@@ -244,12 +240,10 @@ public class NodeReader {
 				String header = trim(firstRow,i ); 
 				if(header!= null && !header.isEmpty()){
 					if(isKey(header)){
-						log.debug("key found " + header);
 						keyList.add(new Cell(i, header)); 
 					}
 					else{
 						headerList.add(new Cell(i,header)); 
-						log.debug("header found  " + header);
 						}
 					}
 				}

@@ -17,7 +17,6 @@ public class Cell {
 		this.content = content; 
 		this.keyContent = keyContent; 
 		this.keyRowNumber = keyRowNumber; 
-		log.debug("cell with keys generated: c: "+ getCellNumber() + " - " + getContent() + " | " + getKeyRowNumber() + " - " + getKeyContent());
 	}
 
 	public Cell(int cellNumber, String content){
