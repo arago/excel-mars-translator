@@ -129,8 +129,10 @@ public class MARSSchemaValidator implements XSDValidator {
 			  	validator.validate(xmlFile);
 			  	return true; 
 			} catch (SAXException e) {
-				if(suppressFalseValidationErrors(e.getLocalizedMessage())==null); 
-					return false;
+				if(suppressFalseValidationErrors(e.getLocalizedMessage())==null){ 
+					return true;
+							}
+				return false; 
 				
 			} catch (IOException e) {
 				e.printStackTrace();
