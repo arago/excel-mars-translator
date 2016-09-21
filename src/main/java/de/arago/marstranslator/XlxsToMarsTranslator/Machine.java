@@ -84,7 +84,7 @@ public class Machine extends Node {
 
 	public String toXml52() {
 		String xml = ""; 
-		if(machinClass!=null){
+		if(isValidEntry(machinClass)){
 			xml+= "<"+machinClass ;
 			xml+= " xmlns=\"http://mars-o-matic.com\"\n";
 		}
@@ -143,36 +143,38 @@ public class Machine extends Node {
 		String xml = "<?xml version=\"1.0\" ?>\n"; 
 		
 		
-		if(machinClass!=null){
+		if(isValidEntry(machinClass)){
 			xml+= "<"+machinClass ;
 			xml+= " MachineClass=\""+machinClass+"\"\n"; 
 		}
 		
 		xml+= "xmlns=\"https://graphit.co/schemas/v2/MARSSchema\"\n";
 
-		if(id!=null){
+		if(isValidEntry(id)){
 			xml+= "ID=\""+id+"\"\n";  
 		}
-		if(nodeName!=null){
+		if(isValidEntry(nodeName)){
 			xml+= "NodeName=\""+nodeName+"\"\n"; 
 		}
 		xml+= "NodeType=\"Machine\"\n"; 
-		if(customerId!=null){
+		if(isValidEntry(customerId)){
 			xml+= "CustomerID=\""+customerId.toLowerCase()+"\"\n"; 
 		}
-		if(customerName!=null){
+		if(isValidEntry(customerName)){
 			xml+= "CustomerName=\""+customerName+"\"\n"; 
 		}
-		if(automationState!=null && ! automationState.isEmpty()){
+		if(isValidEntry(automationState)){
 			xml+= "AutomationState=\""+automationState+"\"\n"; 
 		}
-		if(OSName!=null){
+		if(isValidEntry(OSName)){
+		
 			xml+= "OSName=\""+OSName+"\"\n"; 
 		}
-		if(OSMajorVersion!=null){
+		if(isValidEntry(OSMajorVersion)){
+			System.err.println("The Os Version is: " +OSMajorVersion);
 			xml+= "OSMajorVersion=\""+OSMajorVersion+"\"\n"; 
 		}
-		if(OSMinorVersion!=null && ! OSMinorVersion.isEmpty()){
+		if(isValidEntry( OSMinorVersion)){
 			xml+= "OSMinorVersion=\""+OSMinorVersion+"\""; 
 		}
 		xml+=">\n";
@@ -196,5 +198,8 @@ public class Machine extends Node {
 
 		return xml; 
 	}
+
+
+	
 
 }
