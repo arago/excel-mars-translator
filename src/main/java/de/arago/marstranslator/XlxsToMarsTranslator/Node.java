@@ -24,6 +24,11 @@ public abstract class Node {
 	protected boolean isValid = true; 
 	protected String validatonError = null; 
 	
+	
+	protected boolean isValidEntry(String value) {
+		return value!=null && !value.isEmpty();
+	}
+	
 	protected Logger log = LoggerFactory.getLogger(Node.class); 
 	
 	public String getValidationError(){
@@ -121,7 +126,6 @@ public abstract class Node {
 		String xmlContent =""; 
 		for(Cell header : headerList){
 			for(Cell value : valueList){
-				
 				if(value.getCellNumber()== header.getCellNumber()&& value.getContent()!=null && ! value.getContent().isEmpty()){
 					checkCellForSpecialHeaders(header.getContent(), value.getContent());
 					

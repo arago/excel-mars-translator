@@ -19,8 +19,14 @@ public class App
            xlxProcessor.readAndWrite();
        }
        else if(args.length==3){
+    	   if (args[0].equals("toExcel")) {
+           	   YamlToExcelProcessor yamlToExcleProcessor = new YamlToExcelProcessor(args[1], args[2]);
+           	   yamlToExcleProcessor.processe();
+           	   } 
+    	   else{
     	   XlxProcessor xlxProcessor = new XlxProcessor(args[0], args[1], args[2] ); 
            xlxProcessor.readAndWrite();
+    	   }
        }
        else if(args.length==2){
     	   XlxProcessor xlxProcessor = new XlxProcessor(args[0], args[1]); 
