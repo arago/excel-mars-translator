@@ -272,7 +272,7 @@ public class NodeReader {
 	private static String trim(final XSSFRow row,final int num)
 	{
 		String out="";
-		if(row.getCell(num)!=null)
+		if(row !=null && row.getCell(num)!=null)
 		{
 			if(row.getCell(num).getCellType()==0){
 				out=String.valueOf( Integer.valueOf((int) row.getCell(num).getNumericCellValue()) ); 
