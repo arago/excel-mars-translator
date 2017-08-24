@@ -217,7 +217,7 @@ public class XlxProcessor {
 			if(node.isValid)
 				saveToFile(node.toCURLJSON().toString(), type+i, "json");
 			else{
-				saveToFile(node.getValidationError() +"\n\n"+node.toCURLJSON().toString(), "*"+type+i, "json");
+				saveToFile(node.getValidationError() +"\n\n"+node.toCURLJSON().toString(), "_"+type+i, "json");
 			}
 			log.debug("Store "+ type+i +".json ("   + node.getNodeName()+ ")");
 			i ++; 
