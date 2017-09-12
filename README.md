@@ -7,7 +7,7 @@ Overview
 Usage
 -----
 
-    java -jar XlxsMarsTranslator.jar /full/path/to/folderToStoreXmlFiles/ /full/path/to/source.xlsx
+    java -jar XlxsToMarsTranslator.jar /full/path/to/folderToStoreXmlFiles/ /full/path/to/source.xlsx
 
 Packaging
 -----
