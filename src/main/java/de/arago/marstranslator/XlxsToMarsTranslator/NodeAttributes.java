@@ -9,7 +9,7 @@ public class NodeAttributes
   public static String nodeID = "ID";
   public static String nodeName = "NodeName";
   public static String dependencies = "Dependencies";
-  public static String sourceCiID = "sourceCiId";
+  public static String sourceCiID = "SourceCiId";
   
 
   public static String hostname = "FQDN";
