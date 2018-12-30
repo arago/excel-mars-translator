@@ -1,9 +1,14 @@
 package de.arago.marstranslator.XlxsToMarsTranslator;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Machine extends Node {
@@ -19,7 +24,6 @@ public class Machine extends Node {
 	private String OSMinorVersion= null ;
 	private String hostname= null ; 
 	private String ip= null ; 
-	
 
 
 
@@ -82,7 +86,7 @@ public class Machine extends Node {
 		this.ip = ip;
 	}
 
-	public String toXml52() {
+	/*public String toXml52() {
 		String xml = ""; 
 		if(isValidEntry(machinClass)){
 			xml+= "<"+machinClass ;
@@ -197,9 +201,59 @@ public class Machine extends Node {
 		
 
 		return xml; 
+	}*/
+
+	public JSONObject toCURLJSON(){
+		JSONObject j = new JSONObject(); 
+		try {
+			//j.put("ogit/Automation/marsNodeFormalRepresentation", this.getXmlRepresentation());
+			j.put("ogit/MARS/Machine/class", this.getMachinClass());
+
+			//j.put("ogit/_id", this.getId()); 
+			j.put("ogit/MARS/Machine/cpuArch", "x86_64");
+			j.put("ogit/MARS/Machine/distroName", OSName);
+			j.put("ogit/Version/major", OSMajorVersion);
+			j.put("ogit/Version/minor", OSMinorVersion);
+			//j.put("ogit/Automation/serviceStatus",automationState);
+			j.put("ogit/MARS/Network/fqdn", hostname);
+			j.put("ogit/MARS/Network/interfaceIP", ip);
+			j.put("ogit/_owner", this.getCustomerId());
+			j.put("ogit/id", this.getSourceCiId()); 
+			j.put("ogit/name", this.getNodeName()); 
+			//j.put("ogit/Automation/marsNodeType", this.getNodeType()); 
+			j.put("ogit/_xid",this.getId());
+			j.put("ogit/_type","ogit/MARS/Machine");
+			addOptValues(j, headerList, valueList);
+			JSONArray ja = new JSONArray();
+			if(dependencies!=null&& !dependencies.isEmpty()){
+				for(String dependencie : dependencies){
+					ja.put(dependencie);
+				}
+				j.put("=/Dependencies", ja); 
+			}
+			
+
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+			} 
+	
+		return j; 
 	}
 
 
+	@Override
+	public String toXml53() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public String toXml52() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

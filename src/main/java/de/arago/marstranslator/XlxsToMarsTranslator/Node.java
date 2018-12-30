@@ -140,7 +140,8 @@ public abstract class Node {
 					
 					for(int i = 0; i <valueArray.length; i ++ ){
 						String val = valueArray[i]; 
-						
+						// if length ==1 get value j.put(header.getContent(), value)
+						// if length > 1 j.put(header.getContent(), valueArray)
 						
 						if( keyArray== null){
 							xmlContent+="<Content Value=\""+val+"\"/> "; 
@@ -165,19 +166,54 @@ public abstract class Node {
 		return xmlContent;
 	}
 	
-	public JSONObject toCURLJSON(){
+	public void addOptValues(JSONObject json, List<Cell> headerList, List<Cell> valueList) {
+		for(Cell header : headerList){
+			for(Cell value : valueList){
+				if(value.getCellNumber()== header.getCellNumber()&& value.getContent()!=null && ! value.getContent().isEmpty()){
+					checkCellForSpecialHeaders(header.getContent(), value.getContent());
+					
+					String[] valueArray = value.getContent().split("\r?\n");
+
+					
+//					String[] keyArray = null; 
+//					if(value.getKeyContent()!=null)
+//						keyArray = value.getKeyContent().split("\r?\n"); 
+					if(valueArray.length == 1){
+							try {
+								json.put('/'+header.getContent(),  valueArray[0]);
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+					}
+					else{
+						try {
+							json.put('/'+header.getContent(), valueArray);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				}
+			}
+			
+		
+}
+		
+	
+	
+public JSONObject toCURLJSON(){
 		JSONObject j = new JSONObject(); 
-		try {
-			j.put("ogit/Automation/marsNodeFormalRepresentation", this.getXmlRepresentation());
+/*		try {
+			//j.put("ogit/Automation/marsNodeFormalRepresentation", this.getXmlRepresentation());
 			j.put("ogit/_owner", this.getCustomerId());
 			j.put("ogit/id", this.getSourceCiId()); 
 			j.put("ogit/name", this.getNodeName()); 
-			j.put("ogit/_id", this.getId()); 
+		//	j.put("ogit/_id", this.getId()); 
 			j.put("ogit/Automation/marsNodeType", this.getNodeType()); 
-			
+
 		} catch (JSONException e) {
 			e.printStackTrace();
-		} 
+		} */
 		return j; 
 	}
 	

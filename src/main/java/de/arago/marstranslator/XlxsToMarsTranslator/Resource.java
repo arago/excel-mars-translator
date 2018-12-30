@@ -3,6 +3,8 @@ package de.arago.marstranslator.XlxsToMarsTranslator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Resource extends Node {
@@ -32,7 +34,7 @@ public class Resource extends Node {
 		this.resourceClass = resourceClass;
 	}
 
-	public String toXml52() {
+	/*public String toXml52() {
 		
 		String xml = ""; 
 		if(resourceClass!=null){
@@ -90,9 +92,9 @@ public class Resource extends Node {
 	
 		
 		return xml ; 
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public String toXml53() {
 		String xml = "<?xml version=\"1.0\" ?>\n"; 
 		
@@ -141,7 +143,44 @@ public class Resource extends Node {
 		xml+="</"+resourceClass+">"; 
 		}
 		return xml; 
-	}
+	}*/
 	
+	public JSONObject toCURLJSON(){
+		JSONObject j = new JSONObject(); 
+		try {
+			//j.put("ogit/Automation/marsNodeFormalRepresentation", this.getXmlRepresentation());
+			j.put("ogit/MARS/Resource/class", resourceClass);
+			//j.put("ogit/_id", this.getId()); 
+			j.put("ogit/_owner", this.getCustomerId());
+			j.put("ogit/id", this.getSourceCiId()); 
+			j.put("ogit/name", this.getNodeName()); 
+			//j.put("ogit/Automation/marsNodeType", this.getNodeType()); 
+			j.put("ogit/_xid",this.getId());
+			j.put("ogit/_type","ogit/MARS/Resource");
+			addOptValues(j, headerList, valueList);
+			JSONArray ja = new JSONArray();
+			if(dependencies!=null&& !dependencies.isEmpty()){
+				for(String dependencie : dependencies){
+					ja.put(dependencie);
+				}
+				j.put("=/Dependencies", ja); 
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		return j; 
+		}
+
+	@Override
+	public String toXml53() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String toXml52() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -36,30 +36,47 @@ public class XlxProcessor {
 	
 	private NodeReader nodeReader = new NodeReader(); 
 	private DependencieManager depManager ; // = new DependencieManager(machineList, softwareList, applicationList, resourceList) ; 
-	private XSDValidator validator ; 
+	//private XSDValidator validator ; 
 	
 	private enum outputType {XML, JSON}; 
 	
-	public enum nodeTypes  {Machine, Software, Application, Resource}; 
+	public enum nodeTypes  {Machine, Software, Application, Resource, Dependencies}; 
 
 	
 	private static final Logger log = LoggerFactory.getLogger(XlxProcessor.class); 
 	
-	private void setMARSValidator(){
+	/*private void setMARSValidator(){
 		if(version == 52){
 			MARSVersion = 2013;
 		}else{
 			MARSVersion = 2015; 
 		}
 		this.validator = new MARSSchemaValidator(MARSVersion); 
-	}
+	}*/
+	
+	/*private void setMARSValidator(){
+		try
+		{
+		switch(version){
+		case 52: MARSVersion = 2013;
+		case 53: MARSVersion = 2015; 
+		case 60: MARSVersion = 2015;
+		default: MARSVersion = 2015;
+			}
+		}
+		catch (Exception e)
+		{
+			log.debug("Version is not provided:"+e);
+		}
+		this.validator = new MARSSchemaValidator(MARSVersion); 
+	}*/
 	
 	public XlxProcessor(String pathToFolder, String pathToXMLS){
 		this.pathToFolder = pathToFolder; 
 		this.pathToXMLS = pathToXMLS; 
 		woorkbook = this.getWorkBookFromFile(); 
 		this.version = 53; 
-		setMARSValidator(); 
+		//setMARSValidator(); 
 	}
 	
 	public XlxProcessor(String pathToFolder, String pathToXMLS, String version){
@@ -74,7 +91,7 @@ public class XlxProcessor {
 			log.debug("Version is set to 5.3");
 			this.version =53 ; 
 		}
-		setMARSValidator(); 
+		//setMARSValidator(); 
 	}
 	
 	private XSSFWorkbook getWorkBookFromFile() {
@@ -112,31 +129,32 @@ public class XlxProcessor {
 		}
 		catch (NumberFormatException e){
 			log.debug(e.getLocalizedMessage());
-			log.debug("Version is set to 5.3");
-			this.version =53 ; 
+			log.debug("Version is set to 6.0");
+			this.version =60 ; 
 		}
 		if (outputType.valueOf(outputVersion)!=null) {
 			log.debug("Outputtype is set to "+ outputVersion);
 			this.outputVersion = outputType.valueOf(outputVersion); 
 		}
-		setMARSValidator(); 
+		//setMARSValidator(); 
 	}
 	public void readAndWrite(){
 	readFromExcle(); 
 	checkDependencies(); 
 	transformToXML(); 
-	validateNodes(); 
+	//validateNodes(); 
 	saveToFile();
 	
 	showStats();
 	}
 	
-	private void validateNodes(){
+	
+	/*private void validateNodes(){
 		validator.validateNodeList(machineList); 
 		validator.validateNodeList(softwareList);
 		validator.validateNodeList(resourceList);
 		validator.validateNodeList(applicationList);	
-	}
+	}*/
 
 	private void showStats() {
 		log.info("The following number of Nodes where created"); 
@@ -240,14 +258,17 @@ public class XlxProcessor {
 				writer.flush();
 			} else {
 				log.debug(name + " is empty");
-			}
-
+				}
+			
+			writer.close();
+			fileOutputStream.close();
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	
 		
 	}
 	

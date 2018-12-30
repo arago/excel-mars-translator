@@ -2,6 +2,8 @@ package de.arago.marstranslator.XlxsToMarsTranslator;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public  class Application extends Node{
@@ -13,7 +15,7 @@ public  class Application extends Node{
 	private String applicationClass; 
 	private String aaplicationSubClass; 
 
-	public String toXml52() {
+	/*public String toXml52() {
 		String xml = ""; 
 		if(aaplicationSubClass!=null){
 			xml+= "<"+aaplicationSubClass ;
@@ -69,9 +71,9 @@ public  class Application extends Node{
 			xml+= ">";
 		}
 		return xml ; 
-	}
+	}*/
 	
-	public String toXml53() {
+	/*public String toXml53() {
 		String xml = "<?xml version=\"1.0\" ?>\n"; 
 		
 		//parameters
@@ -122,7 +124,7 @@ public  class Application extends Node{
 		xml+="</"+aaplicationSubClass+">"; 
 		}
 		return xml; 
-	}
+	}*/
 
 	
 
@@ -140,6 +142,48 @@ public  class Application extends Node{
 
 	public void setAaplicationSubClass(String aaplicationSubClass) {
 		this.aaplicationSubClass = aaplicationSubClass;
+	}
+	
+	public JSONObject toCURLJSON(){
+		JSONObject j = new JSONObject(); 
+		JSONArray ja = new JSONArray();
+		
+		try {
+			//j.put("ogit/Automation/marsNodeFormalRepresentation", this.getXmlRepresentation());
+			j.put("ogit/MARS/Application/class", applicationClass);
+			j.put("ogit/MARS/Application/subClass", aaplicationSubClass);
+			//j.put("ogit/_id", this.getId()); 		    
+			j.put("ogit/_owner", this.getCustomerId());
+			j.put("ogit/id", this.getSourceCiId()); 
+			j.put("ogit/name", this.getNodeName()); 
+			//j.put("ogit/Automation/marsNodeType", this.getNodeType()); 
+			j.put("ogit/_xid",this.getId());
+			j.put("ogit/_type","ogit/MARS/Application");
+			addOptValues(j, headerList, valueList);
+
+			if(dependencies!=null&& !dependencies.isEmpty()){
+				for(String dependencie : dependencies){
+					ja.put(dependencie);
+				}
+				j.put("=/Dependencies", ja); 
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} 
+		return j; 
+		}
+
+	@Override
+	public String toXml53() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String toXml52() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
