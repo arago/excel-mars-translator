@@ -99,7 +99,7 @@ public class YAMLToJsonMapper {
 
 	private void addDependency(int i, Map<Integer, String> variableContentMap,
 			String line) {
-		String[] content = line.split(" UID: "); 
+		String[] content = line.split("      ID: ");
 		if(content.length > 1){
 			variableContentMap.put(i, content[1]);
 		}
@@ -129,7 +129,7 @@ public class YAMLToJsonMapper {
 
 
 	private boolean isDependency(String line) {
-		return line.startsWith("    UID");
+		return line.startsWith("      ID");
 	}
 
 	private String addHeaderLines(JSONObject jOut, String line) {
